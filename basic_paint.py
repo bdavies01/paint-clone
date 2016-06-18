@@ -1,7 +1,7 @@
 import tkinter
 
 # TOOLS
-LINE, RECTANGLE, DRAW, OVAL, ERASE = list(range(5))
+DRAW, ERASE = list(range(2))
 color = (0, 0, 0)
 
 class Paint:
@@ -17,7 +17,7 @@ class Paint:
             return
 
         x, y = self.lastx, self.lasty
-        if self.tool in (LINE, RECTANGLE, DRAW, OVAL, ERASE):
+        if self.tool in (DRAW, ERASE):
             self.canvas.coords(self.obj, (x, y, event.x, event.y))
 
     def update_xy(self, event):
@@ -26,17 +26,7 @@ class Paint:
             return
         x, y = event.x, event.y
 
-        if self.tool == LINE: #i want switch statements
-            canvas.unbind('<B1-Motion>')
-            canvas.bind('<B1-Motion>', self.draw)
-            self.obj = self.canvas.create_line((x, y, x, y))
-
-        elif self.tool == RECTANGLE:
-            canvas.unbind('<B1-Motion>')
-            canvas.bind('<B1-Motion>', self.draw)
-            self.obj = self.canvas.create_rectangle((x, y, x, y))
-
-        elif self.tool == DRAW:
+        if self.tool == DRAW:
             erasing = 0
             self.obj = None
             canvas.unbind('<B1-Motion>')
@@ -47,11 +37,6 @@ class Paint:
             self.obj = None
             canvas.unbind('<B1-Motion>')
             canvas.bind('<B1-Motion>', self.draw_point)
-
-        elif self.tool == OVAL:
-            canvas.unbind('<B1-Motion>')
-            canvas.bind('<B1-Motion>', self.draw)
-            self.obj = self.canvas.create_oval((x, y, x, y))
 
         self.lastx, self.lasty = x, y
 
@@ -65,15 +50,9 @@ class Paint:
             canvas.create_rectangle((x, y, x+1, y+1))
 
     def selecttool(self, tool):
-        if tool == 0: #no switch statements in python lol nice
-            print("Line tool selected")
-        elif tool == 1:
-            print("Rectangle tool selected")
-        elif tool == 2:
+        if tool == 0:
             print("Free draw tool selected")
-        elif tool == 3:
-            print("Oval tool selected")
-        elif tool == 4:
+        elif tool == 1:
             print("Erase tool selected")
         self.tool = tool
 
@@ -84,7 +63,7 @@ class Tool:
         frame = tkinter.Frame(parent)
         self.currtool = None
 
-        for i, (text, t) in enumerate((('L', LINE), ('R', RECTANGLE), ('O', OVAL), ('D', DRAW), ('E', ERASE))):
+        for i, (text, t) in enumerate((('D', DRAW), ('E', ERASE))):
             lbl = tkinter.Label(frame, text=text, width=2, relief='raised')
             lbl.tool = t
             lbl.bind('<Button-1>', self.updatetool)
