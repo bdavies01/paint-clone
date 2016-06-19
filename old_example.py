@@ -1,8 +1,8 @@
 import tkinter
+from graphics import *
 
 # TOOLS
 LINE, RECTANGLE, DRAW, OVAL, ERASE = list(range(5))
-color = (0, 0, 0)
 
 class Paint:
     def __init__(self, canvas):
@@ -25,16 +25,18 @@ class Paint:
         if self.tool is None:
             return
         x, y = event.x, event.y
-
+        canvas.bind("<q>", changecolor)
+        canvas.bind("<w>", changecolor)
+        canvas.bind("<e>", changecolor)
         if self.tool == LINE: #i want switch statements
             canvas.unbind('<B1-Motion>')
             canvas.bind('<B1-Motion>', self.draw)
-            self.obj = self.canvas.create_line((x, y, x, y))
+            self.obj = self.canvas.create_line((x, y, x, y), fill="")
 
         elif self.tool == RECTANGLE:
             canvas.unbind('<B1-Motion>')
             canvas.bind('<B1-Motion>', self.draw)
-            self.obj = self.canvas.create_rectangle((x, y, x, y))
+            self.obj = self.canvas.create_rectangle((x, y, x, y), outline = color)
 
         elif self.tool == DRAW:
             erasing = 0
@@ -51,7 +53,7 @@ class Paint:
         elif self.tool == OVAL:
             canvas.unbind('<B1-Motion>')
             canvas.bind('<B1-Motion>', self.draw)
-            self.obj = self.canvas.create_oval((x, y, x, y))
+            self.obj = self.canvas.create_oval((x, y, x, y), outline = color)
 
         self.lastx, self.lasty = x, y
 
@@ -59,10 +61,20 @@ class Paint:
         x = event.x
         y = event.y
         if erasing == 1:
-            canvas.create_rectangle((x, y, x+4, y+4), fill = 'white', outline = 'white')
+            changecolor()
+            canvas.create_rectangle((x, y, x+50, y+50), fill = 'white', outline = 'white')
 
         elif erasing == 0:
-            canvas.create_rectangle((x, y, x+1, y+1))
+            canvas.create_rectangle((x, y, x+1, y+1), fill = color, outline = color)
+
+    def changecolor(event):
+    global color
+    if ord(event.char) == 113:
+        color = "blue"
+    elif ord(event.char) == 119:
+        color = "green"
+    elif ord(event.char) == 101:
+        color = "red"
 
     def selecttool(self, tool):
         if tool == 0: #no switch statements in python lol nice
@@ -74,6 +86,7 @@ class Paint:
         elif tool == 3:
             print("Oval tool selected")
         elif tool == 4:
+            print(color)
             print("Erase tool selected")
         self.tool = tool
 
@@ -102,10 +115,9 @@ class Tool:
         self.currtool = lbl
         self.whiteboard.selecttool(lbl.tool)
 
-
 root = tkinter.Tk()
 root.wm_title("Paint")
-canvas = tkinter.Canvas(highlightbackground='black')
+canvas = Canvas(root, highlightbackground='black')
 canvas.configure(background = 'white', width = 640, height = 480)
 whiteboard = Paint(canvas)
 tool = Tool(whiteboard)
