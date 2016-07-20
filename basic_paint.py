@@ -3,6 +3,7 @@ import tkinter
 # TOOLS
 DRAW, ERASE = list(range(2))
 color = (0, 0, 0)
+xold, yold = None, None
 
 class Paint:
     def __init__(self, canvas):
@@ -10,6 +11,7 @@ class Paint:
         self.tool, self.obj = None, None
         self.lastx, self.lasty = None, None
         self.canvas.bind('<Button-1>', self.update_xy)
+        self.canvas.bind('<ButtonRelease-1>', self.reset)
         self.canvas.bind('<B1-Motion>', self.draw)
 
     def draw(self, event):
@@ -41,13 +43,20 @@ class Paint:
         self.lastx, self.lasty = x, y
 
     def draw_point(self, event):
+        global xold, yold
         x = event.x
         y = event.y
         if erasing == 1:
             canvas.create_rectangle((x, y, x+4, y+4), fill = 'white', outline = 'white')
 
         elif erasing == 0:
-            canvas.create_rectangle((x, y, x+1, y+1))
+            if xold is not None and yold is not None:
+                canvas.create_line(xold, yold, x, y)
+            xold = x
+            yold = y
+    def reset(self, event):
+        global xold, yold
+        xold, yold = None, None
 
     def selecttool(self, tool):
         if tool == 0:
