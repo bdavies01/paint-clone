@@ -1,4 +1,5 @@
-import tkinter
+import Tkinter as tk
+from PIL import ImageTk as im
 DRAW, ERASE, RECTANGLE, OVAL, LINE = list(range(5))
 RED, ORANGE, YELLOW, GREEN, BLUE, PURPLE, DEFAULT = list(range(7))
 
@@ -95,44 +96,77 @@ class Paint:
 			self.color = "black"
 
 class Tool:
-    def __init__(self, whiteboard, parent = None):
-        self.whiteboard = whiteboard
-        frame = tkinter.Frame(parent)
-        self.currtool = None
-        toollabel = tkinter.Label(frame, text = "Tools", width = 3)
-        toollabel.pack(padx=6)
-        frame.pack(side = 'left', fill = 'y', expand = True, pady = 6)
+	def __init__(self, whiteboard, parent = None):
+		self.whiteboard = whiteboard
+		frame = tk.Frame(parent)
+		self.currtool = None
+		toollabel = tk.Label(frame, text = "Tools", width = 3)
+		toollabel.pack(padx=6)
+		frame.pack(side = 'left', fill = 'y', expand = True, pady = 6)
 
-        for i, (text, t) in enumerate((('L', LINE), ('R', RECTANGLE), ('O', OVAL), ('D', DRAW), ('E', ERASE))):
-            lbl = tkinter.Label(frame, text=text, width=2, relief='raised')
-            lbl.tool = t
-            lbl.bind('<Button-1>', self.updatetool)
-            lbl.pack(padx=6, pady=6*(i % 2))
+		for i, (text, t) in enumerate((('L', LINE), ('R', RECTANGLE), ('O', OVAL), ('D', DRAW), ('E', ERASE))):
+			lbl = tk.Label(frame, text=text, width=2, relief='raised')
+			lbl.tool = t
+			lbl.bind('<Button-1>', self.updatetool)
+			lbl.pack(padx=6, pady=6*(i % 2))
 
-        frame.pack(side='left', fill='y', expand=True, pady=6)
+		frame.pack(side='left', fill='y', expand=True, pady=6)
 
-    def updatetool(self, event):
-        lbl = event.widget
+	def updatetool(self, event):
+		lbl = event.widget
 
-        if self.currtool:
-            self.currtool['relief'] = 'raised'
+		if self.currtool:
+			self.currtool['relief'] = 'raised'
 
-        lbl['relief'] = 'sunken'
-        self.currtool = lbl
-        self.whiteboard.selecttool(lbl.tool)
+		lbl['relief'] = 'sunken'
+		self.currtool = lbl
+		self.whiteboard.selecttool(lbl.tool)
 
 class Color:
 	def __init__(self, whiteboard, parent = None):
+		redimg = im.PhotoImage(file = "C:\\Users\\Bert\\Documents\\GitHub\\paint-program\\colors\\red.png")
+		orangeimg = im.PhotoImage(file = "C:\\Users\\Bert\\Documents\\GitHub\\paint-program\\colors\\orange.png")
+		yellowimg = im.PhotoImage(file = "C:\\Users\\Bert\\Documents\\GitHub\\paint-program\\colors\\yellow.png")
+		greenimg = im.PhotoImage(file = "C:\\Users\\Bert\\Documents\\GitHub\\paint-program\\colors\\green.png")
+		blueimg = im.PhotoImage(file = "C:\\Users\\Bert\\Documents\\GitHub\\paint-program\\colors\\blue.png")
+		purpleimg = im.PhotoImage(file = "C:\\Users\\Bert\\Documents\\GitHub\\paint-program\\colors\\purple.png")
+		defaultimg = im.PhotoImage(file = "C:\\Users\\Bert\\Documents\\Github\\paint-program\\colors\\black.png")
 		self.whiteboard = whiteboard
-		frame = tkinter.Frame(parent)
+		frame = tk.Frame(parent)
 		self.currcolor = None
-		colorlabel = tkinter.Label(frame, text = "Colors", width = 4)
+		colorlabel = tk.Label(frame, text = "Colors", width = 4)
 		colorlabel.pack(padx = 6)
 		frame.pack(side = 'right', fill = 'y', expand = True, pady = 6)
 
 		for i, (text, t) in enumerate((('R', RED), ('O', ORANGE), ('Y', YELLOW), ('G', GREEN), ('B', BLUE), ('P', PURPLE), ('D', DEFAULT))):
-			lbl = tkinter.Label(frame, text = text, width = 2, relief = 'raised')
-			lbl.color = t
+			if text == "R":
+				lbl = tk.Label(frame, image = redimg, width = 16, height = 16, relief = 'raised')
+				lbl.photo = redimg
+				lbl.color = 0
+			elif text == "O":
+				lbl = tk.Label(frame, image = orangeimg, width = 16, height = 16, relief = 'raised')
+				lbl.photo = orangeimg
+				lbl.color = 1
+			elif text == "Y":
+				lbl = tk.Label(frame, image = yellowimg, width = 16, height = 16, relief = 'raised')
+				lbl.photo = yellowimg
+				lbl.color = 2
+			elif text == "G":
+				lbl = tk.Label(frame, image = greenimg, width = 16, height = 16, relief = 'raised')
+				lbl.photo = greenimg
+				lbl.color = 3
+			elif text == "B":
+				lbl = tk.Label(frame, image = blueimg, width = 16, height = 16, relief = 'raised')
+				lbl.photo = blueimg
+				lbl.color = 4
+			elif text == "P":
+				lbl = tk.Label(frame, image = purpleimg, width = 16, height = 16, relief = 'raised')
+				lbl.photo = purpleimg
+				lbl.color = 5
+			elif text == "D":
+				lbl = tk.Label(frame, image = defaultimg, width = 16, height = 16, relief = 'raised')
+				lbl.photo = defaultimg
+				lbl.color = 6
 			lbl.bind("<Button-1>", self.updatecolor)
 			lbl.pack(padx = 6, pady=6*(i % 2))
 
@@ -147,9 +181,17 @@ class Color:
 		self.currcolor = lbl
 		self.whiteboard.changecolor(lbl.color)
 
-root = tkinter.Tk()
+print("\nPaly Robotics Summer Camp Example Paint Program")
+print("\nL: Line tool")
+print("R: Rectangle tool")
+print("O: Oval tool")
+print("D: Free draw tool")
+print("E: Erase tool")
+print("\nHave fun!")
+
+root = tk.Tk()
 root.wm_title("Sample Paint Program")
-canvas = tkinter.Canvas(root, highlightbackground = 'black')
+canvas = tk.Canvas(root, highlightbackground = 'black')
 canvas.configure(background = 'white', width = 640, height = 480)
 whiteboard = Paint(canvas)
 tool = Tool(whiteboard)
