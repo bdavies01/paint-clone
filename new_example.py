@@ -191,6 +191,7 @@ print("\nHave fun!")
 
 root = tk.Tk()
 root.wm_title("Sample Paint Program")
+root.iconbitmap(r"C:\\Users\\Bert\\Documents\\Github\\paint-program\\brush.ico")
 canvas = tk.Canvas(root, highlightbackground = 'black')
 canvas.configure(background = 'white', width = 640, height = 480)
 whiteboard = Paint(canvas)
